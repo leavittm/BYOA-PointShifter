@@ -68,6 +68,21 @@
         button:hover {
             background-color: #45a049;
         }
+        .file-input {
+            margin-bottom: 15px;
+            padding: 10px 0;
+        }
+        
+        .file-input input[type="file"] {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+        
+        .file-input label {
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -75,6 +90,10 @@
 
     <div class="base-station">
         <h2>Base Station</h2>
+        <div class="file-input">
+            <label for="csvFile">Import CSV: </label>
+            <input type="file" id="csvFile" accept=".csv">
+        </div>
         <select id="baseSelect">
             <option value="">Select Base Station</option>
         </select>
@@ -131,6 +150,12 @@
                 <tbody></tbody>
             </table>
         </div>
+    </div>
+
+    <div style="text-align: center; margin: 20px 0;">
+        <label for="decimalPlaces">Decimal Places: </label>
+        <input type="number" id="decimalPlaces" value="3" min="0" max="10" style="width: 60px; margin-right: 15px;">
+        <button onclick="downloadAdjustedPoints()">Download Adjusted Points as CSV</button>
     </div>
 
     <script src="data.js"></script>

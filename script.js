@@ -4,19 +4,9 @@ let selectedBase = null;
 
 // Function to initialize data
 function initializeData() {
-    // Copy data from surveyData array
+    // Start with default data
     originalPoints = [...surveyData];
-
-    // Initialize the base station select dropdown
-    const baseSelect = document.getElementById('baseSelect');
-    originalPoints.forEach(point => {
-        const option = document.createElement('option');
-        option.value = point.name;
-        option.textContent = `${point.name} - ${point.description}`;
-        baseSelect.appendChild(option);
-    });
-
-    // Display original points
+    initializeDropdown();
     displayOriginalPoints();
 }
 
@@ -125,5 +115,93 @@ document.getElementById('baseSelect').addEventListener('change', (e) => {
     }
 });
 
+// Add this function to handle CSV parsing
+function parseCSV(csvText) {
+    const lines = csvText.split('\n');
+    const headers = lines[0].split(',');
+    const points = [];
+
+    // Skip header row and parse data
+    for (let i = 1; i < lines.length; i++) {
+        if (lines[i].trim() === '') continue;
+        
+        const values = lines[i].split(',');
+        const point = {
+            name: values[0],
+            description: values[5],
+            easting: parseFloat(values[2]),
+            northing: parseFloat(values[3]),
+            elevation: parseFloat(values[4])
+        };
+        points.push(point);
+    }
+    return points;
+}
+
+// Add this function to handle file selection
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            originalPoints = parseCSV(e.target.result);
+            adjustedPoints = []; // Clear any existing adjustments
+            selectedBase = null; // Clear selected base
+            
+            // Refresh the display
+            initializeDropdown();
+            displayOriginalPoints();
+            updateBaseInfo();
+        };
+        reader.readAsText(file);
+    }
+}
+
+// Add this function to handle dropdown initialization
+function initializeDropdown() {
+    const baseSelect = document.getElementById('baseSelect');
+    baseSelect.innerHTML = '<option value="">Select Base Station</option>';
+    originalPoints.forEach(point => {
+        const option = document.createElement('option');
+        option.value = point.name;
+        option.textContent = `${point.name} - ${point.description}`;
+        baseSelect.appendChild(option);
+    });
+}
+
 // Replace loadCSV() call with initializeData()
-initializeData(); 
+initializeData();
+
+// Add file input event listener
+document.getElementById('csvFile').addEventListener('change', handleFileSelect);
+
+function downloadAdjustedPoints() {
+    // Get desired decimal places (default to 3 if invalid)
+    const decimalPlaces = parseInt(document.getElementById('decimalPlaces').value);
+    const places = (!isNaN(decimalPlaces) && decimalPlaces >= 0) ? decimalPlaces : 3;
+
+    // Create CSV content
+    const headers = 'Name,Description,Easting,Northing,Elevation\n';
+    const csvContent = adjustedPoints.map(point => 
+        `${point.name},${point.description},${point.easting.toFixed(places)},${point.northing.toFixed(places)},${point.elevation.toFixed(places)}`
+    ).join('\n');
+    
+    // Create a Blob with the CSV content
+    const blob = new Blob([headers + csvContent], { type: 'text/csv' });
+    
+    // Create a temporary URL for the Blob
+    const url = window.URL.createObjectURL(blob);
+    
+    // Create a temporary link element
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'adjusted_points.csv'; // Name of the download file
+    
+    // Append link to body, click it, and remove it
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Clean up the temporary URL
+    window.URL.revokeObjectURL(url);
+} 
