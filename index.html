@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey Point Adjustment Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .base-station {
+            background-color: #f0f0f0;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .coordinate-input {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+        }
+        .difference-display {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #e8f4ff;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+            cursor: pointer;
+        }
+        .tables-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        input[type="number"] {
+            width: 150px;
+            padding: 5px;
+            margin: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Survey Point Adjustment Tool</h1>
+
+    <div class="base-station">
+        <h2>Base Station</h2>
+        <select id="baseSelect">
+            <option value="">Select Base Station</option>
+        </select>
+        <div id="baseInfo"></div>
+    </div>
+
+    <div class="coordinate-input">
+        <h2>New Base Coordinates</h2>
+        <div>
+            <label>Easting: </label>
+            <input type="number" id="newEasting" step="0.001">
+            <label>Northing: </label>
+            <input type="number" id="newNorthing" step="0.001">
+            <label>Elevation: </label>
+            <input type="number" id="newElevation" step="0.001">
+        </div>
+        <button onclick="calculateAdjustment()">Calculate Adjustment</button>
+    </div>
+
+    <div class="difference-display">
+        <h2>Coordinate Differences</h2>
+        <div id="differences"></div>
+    </div>
+
+    <div class="tables-container">
+        <div>
+            <h2>Original Points</h2>
+            <table id="originalTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Easting</th>
+                        <th>Northing</th>
+                        <th>Elevation</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div>
+            <h2>Adjusted Points</h2>
+            <table id="adjustedTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Easting</th>
+                        <th>Northing</th>
+                        <th>Elevation</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
