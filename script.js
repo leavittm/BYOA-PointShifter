@@ -144,14 +144,23 @@ function handleFileSelect(event) {
     if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            originalPoints = parseCSV(e.target.result);
-            adjustedPoints = []; // Clear any existing adjustments
-            selectedBase = null; // Clear selected base
-            
-            // Refresh the display
-            initializeDropdown();
-            displayOriginalPoints();
-            updateBaseInfo();
+            try {
+                originalPoints = parseCSV(e.target.result);
+                adjustedPoints = []; // Clear any existing adjustments
+                selectedBase = null; // Clear selected base
+                
+                // Refresh the display
+                initializeDropdown();
+                displayOriginalPoints();
+                updateBaseInfo();
+            } catch (error) {
+                console.error('Error processing file:', error);
+                alert('Error processing file: ' + error.message);
+            }
+        };
+        reader.onerror = function(e) {
+            console.error('Error reading file:', e);
+            alert('Error reading file: ' + e.target.error);
         };
         reader.readAsText(file);
     }
